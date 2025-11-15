@@ -85,7 +85,7 @@
 ### Functional Requirements
 
 - **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
+- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
@@ -94,6 +94,19 @@
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+
+### Constitutional Alignment Requirements
+
+All features MUST address applicable constitutional principles. Include requirements for:
+
+- **Multi-Model AI**: If content generation: specify AI models (GPT-4, Claude, Perplexity), fallback strategy, templates
+- **Multi-Platform**: If publishing: specify target platforms (10+), content adaptation approach, scheduling
+- **AI Tracking**: If monitoring: specify AI platforms (ChatGPT, Claude, Perplexity, Gemini), countries (100+), metrics
+- **Automation**: Specify opportunity detection rules, auto-fix capabilities, scanning frequency (6-hour intervals)
+- **Quality**: Specify plagiarism thresholds, readability scores, fact verification approach, GEO optimization (quotes, citations)
+- **Performance**: Specify scalability targets (1000+ users), caching strategy, API response times (<200ms p95)
+- **Enterprise**: If multi-tenant: specify brand isolation, team permissions, white-label support, API/webhook needs
+- **Security**: Specify GDPR requirements, encryption, audit logging, data retention/deletion policies
 
 ### Key Entities *(include if feature involves data)*
 

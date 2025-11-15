@@ -60,7 +60,7 @@ description: "Task list template for feature implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-Examples of foundational tasks (adjust based on your project):
+Examples of foundational tasks (adjust based on your project and constitutional requirements):
 
 - [ ] T004 Setup database schema and migrations framework
 - [ ] T005 [P] Implement authentication/authorization framework
@@ -68,6 +68,17 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T007 Create base models/entities that all stories depend on
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
+
+**Constitutional Foundation Tasks** (include if applicable):
+
+- [ ] T010 [P] Configure multi-AI-model integration framework (GPT-4, Claude, Perplexity) with fallback logic
+- [ ] T011 [P] Setup multi-platform publishing adapter infrastructure
+- [ ] T012 [P] Initialize AI visibility tracking framework (ChatGPT, Claude, Perplexity, Gemini APIs)
+- [ ] T013 [P] Configure automation scheduler (6-hour opportunity scanning intervals)
+- [ ] T014 [P] Setup quality control services (plagiarism API, readability scorer, fact verification)
+- [ ] T015 [P] Configure caching layer and queue system for scalability
+- [ ] T016 [P] Implement multi-tenant/multi-brand data isolation
+- [ ] T017 [P] Setup security infrastructure (encryption, audit logging, GDPR compliance framework)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -150,12 +161,26 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
+**Standard Polish Tasks**:
+
 - [ ] TXXX [P] Documentation updates in docs/
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
+
+**Constitutional Compliance Tasks** (include if applicable):
+
+- [ ] TXXX [P] Verify multi-model AI fallback handling and error recovery
+- [ ] TXXX [P] Validate platform-specific content adaptation across all 10+ platforms
+- [ ] TXXX [P] Test global tracking across sample countries from each region
+- [ ] TXXX [P] Verify automation scheduler reliability and 6-hour interval accuracy
+- [ ] TXXX [P] Audit quality control thresholds (plagiarism, readability, fact verification)
+- [ ] TXXX Load test for 1000+ concurrent users and validate <200ms p95 response times
+- [ ] TXXX [P] Test multi-brand isolation and permission boundaries
+- [ ] TXXX [P] Security audit: encryption at rest/transit, GDPR compliance, audit logs
+- [ ] TXXX Verify observability: structured logging, error tracking, performance metrics
 
 ---
 

@@ -31,7 +31,19 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify compliance with Magnum Opus Constitution principles:
+
+- **I. AI-First Multi-Model Content Generation**: Does feature use multiple AI models (GPT-4, Claude, Perplexity) with fallback? Does it support templates and bulk generation?
+- **II. Universal Multi-Platform Distribution**: Does publishing support 10+ platforms with platform-specific adaptation?
+- **III. Comprehensive AI Visibility Tracking**: Does tracking cover ChatGPT, Claude, Perplexity, Gemini with global (100+ country) support?
+- **IV. Intelligent Automation**: Are opportunity detection and auto-fix capabilities included? Is scanning automated (6-hour intervals)?
+- **V. Quality & GEO Optimization**: Are plagiarism checks, readability scores, fact verification, and GEO layers (quotes, statistics, citations) implemented?
+- **VI. Scalability & Performance**: Does design support 1000+ users? Are caching, parallel processing, and queue systems included? Does it meet <200ms p95 API response target?
+- **VII. Enterprise-Ready Architecture**: Does feature support multi-brand, team collaboration, white-label, and API access requirements?
+- **Security & Compliance**: Are GDPR compliance, data encryption, audit logs, and security requirements addressed?
+- **Development Workflow**: Does specification follow `/speckit.specify` → `/speckit.plan` → `/speckit.tasks` workflow with independently testable user stories?
+
+**Result**: ✅ PASS / ⚠ VIOLATIONS REQUIRE JUSTIFICATION
 
 ## Project Structure
 
