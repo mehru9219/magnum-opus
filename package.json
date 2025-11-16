@@ -1,0 +1,16 @@
+{
+  "name": "magnum-opus",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:agent3": "vitest run --dir lib --dir convex"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  }
+}

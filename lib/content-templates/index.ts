@@ -221,9 +221,14 @@ export function getTemplateMetadata(templateType: ContentTemplateType): Template
 export function recommendTemplate(topic: string): ContentTemplateType {
   const lowerTopic = topic.toLowerCase();
 
-  // How-to indicators
-  if (lowerTopic.match(/how to|step by step|tutorial|guide to/)) {
-    return 'how-to';
+  // Ultimate guide indicators (check first - most specific)
+  if (lowerTopic.match(/complete|ultimate|comprehensive|everything|master|definitive/)) {
+    return 'ultimate-guide';
+  }
+
+  // Problem-solver indicators (check before how-to to catch "how to fix")
+  if (lowerTopic.match(/fix|solve|troubleshoot|error|problem|issue|not working/)) {
+    return 'problem-solver';
   }
 
   // Comparison indicators
@@ -236,14 +241,9 @@ export function recommendTemplate(topic: string): ContentTemplateType {
     return 'listicle';
   }
 
-  // Problem-solver indicators
-  if (lowerTopic.match(/fix|solve|troubleshoot|error|problem|issue|not working/)) {
-    return 'problem-solver';
-  }
-
-  // Ultimate guide indicators
-  if (lowerTopic.match(/complete|ultimate|comprehensive|everything|master|definitive/)) {
-    return 'ultimate-guide';
+  // How-to indicators (check later to avoid false positives)
+  if (lowerTopic.match(/how to|step by step|tutorial|guide to/)) {
+    return 'how-to';
   }
 
   // Default to how-to as it's most versatile

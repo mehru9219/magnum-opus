@@ -27,6 +27,7 @@ export interface QualityCheckResult {
     plagiarism?: any;
     readability?: any;
     factCheck?: any;
+    error?: string;
   };
 }
 

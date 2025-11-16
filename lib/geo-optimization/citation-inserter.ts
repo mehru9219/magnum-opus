@@ -311,7 +311,7 @@ export function extractExistingCitations(content: string): string[] {
   }
 
   // Also find inline citations
-  const inlineMatches = content.matchAll(/\]\((https?:\/\/[^\)]+)\s*"?[^"]*"?\)/g);
+  const inlineMatches = content.matchAll(/\]\((https?:\/\/[^\s")]+)/g);
   for (const match of inlineMatches) {
     if (!citations.includes(match[1])) {
       citations.push(match[1]);
