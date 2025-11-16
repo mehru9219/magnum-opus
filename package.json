@@ -1,13 +1,16 @@
 {
   "name": "magnum-opus",
-  "version": "1.0.0",
-  "description": "��#\u0000 \u0000m\u0000a\u0000g\u0000n\u0000u\u0000m\u0000-\u0000o\u0000p\u0000u\u0000s\u0000\r\u0000 \u0000",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-Powered Content Generation & GEO Platform",
   "main": "index.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:agent3": "vitest run --dir lib --dir convex"
   },
   "repository": {
     "type": "git",
@@ -16,6 +19,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
