@@ -26,8 +26,8 @@ export const addCompetitorSite = mutation({
     // Check if competitor already exists for this brand
     const existing = await ctx.db
       .query("competitorSites")
-      .withIndex("by_brand", (q) => q.eq("brandId", args.brandId))
-      .filter((q) => q.eq(q.field("competitorUrl"), args.competitorUrl))
+      .withIndex("by_brand", (q: any) => q.eq("brandId", args.brandId))
+      .filter((q: any) => q.eq(q.field("competitorUrl"), args.competitorUrl))
       .first();
 
     if (existing) {
@@ -79,7 +79,7 @@ export const removeCompetitorSite = mutation({
     // Delete all competitor pages
     const pages = await ctx.db
       .query("competitorPages")
-      .withIndex("by_competitor", (q) => q.eq("competitorSiteId", args.competitorId))
+      .withIndex("by_brand", (q: any) => q.eq("competitorSiteId", args.competitorId))
       .collect();
 
     for (const page of pages) {
@@ -155,8 +155,8 @@ export const saveCompetitorPage = mutation({
     // Check if page already exists
     const existing = await ctx.db
       .query("competitorPages")
-      .withIndex("by_competitor", (q) => q.eq("competitorSiteId", args.competitorSiteId))
-      .filter((q) => q.eq(q.field("pageUrl"), args.pageUrl))
+      .withIndex("by_brand", (q: any) => q.eq("competitorSiteId", args.competitorSiteId))
+      .filter((q: any) => q.eq(q.field("pageUrl"), args.pageUrl))
       .first();
 
     if (existing) {
@@ -243,12 +243,12 @@ export const getCompetitorSites = query({
   handler: async (ctx, args) => {
     let query = ctx.db
       .query("competitorSites")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId));
+      .withIndex("by_brand", (q: any) => q.eq("userId", args.userId));
 
     const competitors = await query.collect();
 
     if (args.brandId) {
-      return competitors.filter((c) => c.brandId === args.brandId);
+      return competitors.filter((c: any) => c.brandId === args.brandId);
     }
 
     return competitors;
@@ -277,7 +277,7 @@ export const getCompetitorContent = query({
 
     const pages = await ctx.db
       .query("competitorPages")
-      .withIndex("by_competitor", (q) => q.eq("competitorSiteId", competitorId))
+      .withIndex("by_brand", (q: any) => q.eq("competitorSiteId", competitorId))
       .take(limit);
 
     return pages;
@@ -301,21 +301,21 @@ export const analyzeContentGaps = query({
     // Get user's published articles
     const userArticles = await ctx.db
       .query("articles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("status"), "published"))
+      .withIndex("by_brand", (q: any) => q.eq("userId", userId))
+      .filter((q: any) => q.eq(q.field("status"), "published"))
       .collect();
 
     // Get competitor pages
     const competitorPages = await ctx.db
       .query("competitorPages")
-      .withIndex("by_competitor", (q) => q.eq("competitorSiteId", competitorId))
+      .withIndex("by_brand", (q: any) => q.eq("competitorSiteId", competitorId))
       .collect();
 
     // Extract user's topics/keywords
     const userTopics = new Set<string>();
     const userKeywords = new Set<string>();
 
-    userArticles.forEach((article) => {
+    userArticles.forEach((article: any) => {
       if (article.topic) {
         userTopics.add(article.topic.toLowerCase());
       }
@@ -328,7 +328,7 @@ export const analyzeContentGaps = query({
     // Extract competitor topics/keywords
     const competitorTopics = new Map<string, number>(); // topic -> page count
 
-    competitorPages.forEach((page) => {
+    competitorPages.forEach((page: any) => {
       // Extract topics from titles and headings
       const topics: string[] = [];
 
@@ -339,7 +339,7 @@ export const analyzeContentGaps = query({
 
       // Keywords
       if (page.keywords) {
-        page.keywords.forEach((kw) => {
+        page.keywords.forEach((kw: any) => {
           const normalized = kw.toLowerCase();
           const count = competitorTopics.get(normalized) || 0;
           competitorTopics.set(normalized, count + 1);
@@ -370,7 +370,7 @@ export const analyzeContentGaps = query({
     });
 
     // Sort by competitor page count (highest first)
-    gaps.sort((a, b) => b.competitorPageCount - a.competitorPageCount);
+    gaps.sort((a: any, b: any) => b.competitorPageCount - a.competitorPageCount);
 
     return {
       totalUserArticles: userArticles.length,
@@ -401,29 +401,29 @@ export const getCompetitorComparison = query({
     // Get user's articles
     const userArticles = await ctx.db
       .query("articles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("status"), "published"))
+      .withIndex("by_brand", (q: any) => q.eq("userId", userId))
+      .filter((q: any) => q.eq(q.field("status"), "published"))
       .collect();
 
     // Get competitor pages
     const competitorPages = await ctx.db
       .query("competitorPages")
-      .withIndex("by_competitor", (q) => q.eq("competitorSiteId", competitorId))
+      .withIndex("by_brand", (q: any) => q.eq("competitorSiteId", competitorId))
       .collect();
 
     // Calculate metrics
     const userMetrics = {
       totalPages: userArticles.length,
-      avgWordCount: userArticles.reduce((sum, a) => sum + (a.wordCount || 0), 0) / (userArticles.length || 1),
-      pagesWithFAQ: userArticles.filter((a) => a.hasFAQ).length,
-      avgInternalLinks: userArticles.reduce((sum, a) => sum + (a.internalLinks?.length || 0), 0) / (userArticles.length || 1),
+      avgWordCount: userArticles.reduce((sum: any, a: any) => sum + (a.wordCount || 0), 0) / (userArticles.length || 1),
+      pagesWithFAQ: userArticles.filter((a: any) => a.hasFAQ).length,
+      avgInternalLinks: userArticles.reduce((sum: any, a: any) => sum + (a.internalLinks?.length || 0), 0) / (userArticles.length || 1),
     };
 
     const competitorMetrics = {
       totalPages: competitorPages.length,
-      avgWordCount: competitorPages.reduce((sum, p) => sum + (p.wordCount || 0), 0) / (competitorPages.length || 1),
-      pagesWithFAQ: competitorPages.filter((p) => p.hasFAQ).length,
-      avgInternalLinks: competitorPages.reduce((sum, p) => sum + (p.internalLinks?.length || 0), 0) / (competitorPages.length || 1),
+      avgWordCount: competitorPages.reduce((sum: any, p: any) => sum + (p.wordCount || 0), 0) / (competitorPages.length || 1),
+      pagesWithFAQ: competitorPages.filter((p: any) => p.hasFAQ).length,
+      avgInternalLinks: competitorPages.reduce((sum: any, p: any) => sum + (p.internalLinks?.length || 0), 0) / (competitorPages.length || 1),
     };
 
     return {

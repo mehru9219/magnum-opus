@@ -177,12 +177,12 @@ export class CompetitorCrawler {
       // Extract meta description
       const metaDescription = await page.$eval(
         'meta[name="description"]',
-        (el) => el.getAttribute("content") || undefined
+        (el: any) => el.getAttribute("content") || undefined
       ).catch(() => undefined);
 
       // Extract headings
-      const headings = await page.$$eval("h1, h2, h3, h4, h5, h6", (elements) =>
-        elements.map((el) => ({
+      const headings = await page.$$eval("h1, h2, h3, h4, h5, h6", (elements: any) =>
+        elements.map((el: any) => ({
           level: parseInt(el.tagName.substring(1)),
           text: el.textContent?.trim() || "",
         }))
@@ -205,7 +205,7 @@ export class CompetitorCrawler {
         ];
 
         unwantedSelectors.forEach((selector) => {
-          document.querySelectorAll(selector).forEach((el) => el.remove());
+          document.querySelectorAll(selector).forEach((el: any) => el.remove());
         });
 
         // Get main content
@@ -214,23 +214,23 @@ export class CompetitorCrawler {
       });
 
       // Calculate word count
-      const wordCount = contentMarkdown.split(/\s+/).filter((word) => word.length > 0).length;
+      const wordCount = contentMarkdown.split(/\s+/).filter((word: any) => word.length > 0).length;
 
       // Extract keywords from meta tags
-      const keywords = await page.$$eval('meta[name="keywords"]', (elements) =>
-        elements.flatMap((el) => {
+      const keywords = await page.$$eval('meta[name="keywords"]', (elements: any) =>
+        elements.flatMap((el: any) => {
           const content = el.getAttribute("content") || "";
-          return content.split(",").map((kw) => kw.trim());
+          return content.split(",").map((kw: any) => kw.trim());
         })
       ).catch(() => []);
 
       // Extract all links
-      const links = await page.$$eval("a[href]", (elements) =>
-        elements.map((el) => el.getAttribute("href") || "").filter((href) => href.length > 0)
+      const links = await page.$$eval("a[href]", (elements: any) =>
+        elements.map((el: any) => el.getAttribute("href") || "").filter((href: any) => href.length > 0)
       );
 
       // Resolve relative URLs
-      const resolvedLinks = links.map((href) => {
+      const resolvedLinks = links.map((href: any) => {
         try {
           return new URL(href, url).href;
         } catch {
@@ -239,8 +239,8 @@ export class CompetitorCrawler {
       });
 
       // Separate internal and external links
-      const internalLinks = resolvedLinks.filter((link) => this.isInternalUrl(link));
-      const externalLinks = resolvedLinks.filter((link) => !this.isInternalUrl(link));
+      const internalLinks = resolvedLinks.filter((link: any) => this.isInternalUrl(link));
+      const externalLinks = resolvedLinks.filter((link: any) => !this.isInternalUrl(link));
 
       // Check for FAQ schema
       const hasFAQ = await page.evaluate(() => {
@@ -336,7 +336,7 @@ export class CompetitorCrawler {
 
             // If within depth limit, add internal links to queue
             if (depth < this.config.maxDepth) {
-              pageData.internalLinks.forEach((link) => {
+              pageData.internalLinks.forEach((link: any) => {
                 const normalizedLink = this.normalizeUrl(link);
                 if (!this.visitedUrls.has(normalizedLink)) {
                   queue.push([normalizedLink, depth + 1]);

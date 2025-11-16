@@ -219,7 +219,7 @@ export const publishOpportunity = mutation({
     // Check if there's a staged change
     const stagedChange = await ctx.db
       .query("stagedChanges")
-      .withIndex("by_opportunity", (q) => q.eq("opportunityId", args.opportunityId))
+      .withIndex("by_brand", (q: any) => q.eq("opportunityId", args.opportunityId))
       .first();
 
     if (!stagedChange) {
@@ -339,20 +339,20 @@ export const getPriorityOpportunities = query({
     // Query opportunities by user
     let opportunities = await ctx.db
       .query("opportunities")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_brand", (q: any) => q.eq("userId", userId))
       .collect();
 
     // Apply filters
     if (status) {
-      opportunities = opportunities.filter((opp) => opp.status === status);
+      opportunities = opportunities.filter((opp: any) => opp.status === status);
     }
 
     if (type) {
-      opportunities = opportunities.filter((opp) => opp.type === type);
+      opportunities = opportunities.filter((opp: any) => opp.type === type);
     }
 
     // Sort by priority score (highest first)
-    opportunities.sort((a, b) => b.priorityScore - a.priorityScore);
+    opportunities.sort((a: any, b: any) => b.priorityScore - a.priorityScore);
 
     // Limit results
     opportunities = opportunities.slice(0, limit);
@@ -376,7 +376,7 @@ export const getOpportunityScanHistory = query({
 
     const scans = await ctx.db
       .query("opportunityScans")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_brand", (q: any) => q.eq("userId", userId))
       .order("desc")
       .take(limit);
 
@@ -408,7 +408,7 @@ export const getOpportunityDetails = query({
     // Get associated staged changes if any
     const stagedChanges = await ctx.db
       .query("stagedChanges")
-      .withIndex("by_opportunity", (q) => q.eq("opportunityId", args.opportunityId))
+      .withIndex("by_brand", (q: any) => q.eq("opportunityId", args.opportunityId))
       .collect();
 
     return {
@@ -430,33 +430,33 @@ export const getOpportunityStatistics = query({
   handler: async (ctx, args) => {
     const opportunities = await ctx.db
       .query("opportunities")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .withIndex("by_brand", (q: any) => q.eq("userId", args.userId))
       .collect();
 
     const total = opportunities.length;
-    const pending = opportunities.filter((o) => o.status === "pending").length;
-    const inProgress = opportunities.filter((o) => o.status === "in_progress").length;
-    const completed = opportunities.filter((o) => o.status === "completed").length;
-    const failed = opportunities.filter((o) => o.status === "failed").length;
-    const dismissed = opportunities.filter((o) => o.status === "dismissed").length;
+    const pending = opportunities.filter((o: any) => o.status === "pending").length;
+    const inProgress = opportunities.filter((o: any) => o.status === "in_progress").length;
+    const completed = opportunities.filter((o: any) => o.status === "completed").length;
+    const failed = opportunities.filter((o: any) => o.status === "failed").length;
+    const dismissed = opportunities.filter((o: any) => o.status === "dismissed").length;
 
     const completionRate = total > 0 ? (completed / total) * 100 : 0;
 
     // Count by type
     const byType = {
-      headings: opportunities.filter((o) => o.type === "UPDATE_HEADINGS_KEYWORDS").length,
-      faq: opportunities.filter((o) => o.type === "ADD_FAQ").length,
-      metadata: opportunities.filter((o) => o.type === "REFRESH_METADATA").length,
-      llmtxt: opportunities.filter((o) => o.type === "UPLOAD_LLMTXT").length,
-      links: opportunities.filter((o) => o.type === "ADD_INTERNAL_LINKS").length,
+      headings: opportunities.filter((o: any) => o.type === "UPDATE_HEADINGS_KEYWORDS").length,
+      faq: opportunities.filter((o: any) => o.type === "ADD_FAQ").length,
+      metadata: opportunities.filter((o: any) => o.type === "REFRESH_METADATA").length,
+      llmtxt: opportunities.filter((o: any) => o.type === "UPLOAD_LLMTXT").length,
+      links: opportunities.filter((o: any) => o.type === "ADD_INTERNAL_LINKS").length,
     };
 
     // Count by priority
     const byPriority = {
-      urgent: opportunities.filter((o) => o.priorityLevel === "urgent").length,
-      high: opportunities.filter((o) => o.priorityLevel === "high").length,
-      medium: opportunities.filter((o) => o.priorityLevel === "medium").length,
-      low: opportunities.filter((o) => o.priorityLevel === "low").length,
+      urgent: opportunities.filter((o: any) => o.priorityLevel === "urgent").length,
+      high: opportunities.filter((o: any) => o.priorityLevel === "high").length,
+      medium: opportunities.filter((o: any) => o.priorityLevel === "medium").length,
+      low: opportunities.filter((o: any) => o.priorityLevel === "low").length,
     };
 
     return {
@@ -486,12 +486,12 @@ export const getOpportunitiesByPage = query({
   handler: async (ctx, args) => {
     const opportunities = await ctx.db
       .query("opportunities")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .filter((q) => q.eq(q.field("pageUrl"), args.pageUrl))
+      .withIndex("by_brand", (q: any) => q.eq("userId", args.userId))
+      .filter((q: any) => q.eq(q.field("pageUrl"), args.pageUrl))
       .collect();
 
     // Sort by priority
-    opportunities.sort((a, b) => b.priorityScore - a.priorityScore);
+    opportunities.sort((a: any, b: any) => b.priorityScore - a.priorityScore);
 
     return opportunities;
   },

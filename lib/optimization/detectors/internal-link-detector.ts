@@ -90,20 +90,20 @@ function calculateRelevance(sourceArticle: any, targetArticle: any): number {
   }
 
   // Check title word overlap
-  const sourceTitleWords = new Set(
+  const sourceTitleWords = new Set<string>(
     (sourceArticle.title || "").toLowerCase().split(/\s+/)
   );
-  const targetTitleWords = new Set(
+  const targetTitleWords = new Set<string>(
     (targetArticle.title || "").toLowerCase().split(/\s+/)
   );
 
   let titleOverlap = 0;
-  sourceTitleWords.forEach((word) => {
+  for (const word of sourceTitleWords) {
     if (targetTitleWords.has(word) && word.length > 3) {
       // Ignore short words
       titleOverlap++;
     }
-  });
+  }
 
   relevanceScore += titleOverlap * 5; // 5 points per shared title word
 
