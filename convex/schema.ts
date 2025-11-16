@@ -1,238 +1,249 @@
-/**
- * Convex Database Schema - Magnum Opus MVP
- *
- * Week 3: AI Visibility Tracking Tables
- * Agent 5: Tracking Backend Developer
- *
- * References: phase-1-spec.md (Week 3 Key Entities)
- */
-
-import { defineSchema, defineTable } from 'convex/server';
-import { v } from 'convex/values';
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
 
 export default defineSchema({
-  // ===== WEEK 3: AI VISIBILITY TRACKING =====
-
-  /**
-   * Tracked Brands
-   * User's brand configuration for visibility tracking
-   */
-  trackedBrands: defineTable({
-    userId: v.string(), // Clerk user ID
-    brandName: v.string(),
-    brandVariations: v.array(v.string()), // e.g., ["ProjectHub", "Project Hub"]
-    websiteUrl: v.string(),
-    contextClues: v.optional(v.array(v.string())), // For false positive filtering
-    createdAt: v.number(),
-    updatedAt: v.number()
-  })
-    .index('by_user', ['userId'])
-    .index('by_brand_name', ['brandName']),
-
-  /**
-   * Tracked Keywords
-   * Keywords being monitored for visibility
-   */
-  trackedKeywords: defineTable({
-    brandId: v.id('trackedBrands'),
-    userId: v.string(), // Denormalized for faster queries
-    keywordText: v.string(),
-    isVip: v.boolean(), // VIP keywords tracked hourly, others daily
-    trackingFrequency: v.union(
-      v.literal('hourly'),
-      v.literal('daily'),
-      v.literal('weekly')
+  // Week 1: Content Generation
+  articles: defineTable({
+    userId: v.string(),
+    title: v.string(),
+    content: v.string(),
+    status: v.union(
+      v.literal("queued"),
+      v.literal("generating"),
+      v.literal("completed"),
+      v.literal("failed")
     ),
-    customPrompts: v.optional(v.array(v.string())),
-    audiences: v.optional(v.array(v.string())),
-    useCases: v.optional(v.array(v.string())),
-    industries: v.optional(v.array(v.string())),
+    template: v.string(), // "listicle" | "how-to" | "comparison" | "problem-solver" | "ultimate-guide"
+    generatedBy: v.string(), // AI model used
+    tokensUsed: v.number(),
+    costUsd: v.number(),
     createdAt: v.number(),
-    updatedAt: v.number()
+    updatedAt: v.number(),
   })
-    .index('by_brand', ['brandId'])
-    .index('by_user', ['userId'])
-    .index('by_vip_status', ['isVip'])
-    .index('by_frequency', ['trackingFrequency']),
+    .index("by_user", ["userId"])
+    .index("by_status", ["status"])
+    .index("by_user_status", ["userId", "status"]),
 
-  /**
-   * Competitor Brands
-   * Competitors for comparison tracking
-   */
+  topics: defineTable({
+    userId: v.string(),
+    topic: v.string(),
+    keywords: v.array(v.string()),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  qualityChecks: defineTable({
+    articleId: v.id("articles"),
+    plagiarismScore: v.number(),
+    readabilityScore: v.number(),
+    factCheckScore: v.number(),
+    passed: v.boolean(),
+    createdAt: v.number(),
+  }).index("by_article", ["articleId"]),
+
+  citations: defineTable({
+    articleId: v.id("articles"),
+    url: v.string(),
+    title: v.string(),
+    quotedText: v.string(),
+    position: v.number(),
+    createdAt: v.number(),
+  }).index("by_article", ["articleId"]),
+
+  // Week 2: Publishing
+  platformConnections: defineTable({
+    userId: v.string(),
+    platform: v.string(), // "wordpress" | "shopify" | "medium" | etc.
+    credentials: v.string(), // Encrypted JSON
+    isActive: v.boolean(),
+    lastSyncedAt: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_platform", ["userId", "platform"]),
+
+  publishJobs: defineTable({
+    userId: v.string(),
+    articleId: v.id("articles"),
+    platforms: v.array(v.string()),
+    status: v.union(
+      v.literal("queued"),
+      v.literal("publishing"),
+      v.literal("completed"),
+      v.literal("partial"),
+      v.literal("failed")
+    ),
+    scheduledFor: v.optional(v.number()),
+    createdAt: v.number(),
+    completedAt: v.optional(v.number()),
+  })
+    .index("by_user", ["userId"])
+    .index("by_status", ["status"])
+    .index("by_scheduled", ["scheduledFor"]),
+
+  publishResults: defineTable({
+    publishJobId: v.id("publishJobs"),
+    platform: v.string(),
+    status: v.union(v.literal("success"), v.literal("failed")),
+    platformUrl: v.optional(v.string()),
+    platformId: v.optional(v.string()),
+    errorMessage: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_job", ["publishJobId"]),
+
+  contentAdaptations: defineTable({
+    articleId: v.id("articles"),
+    platform: v.string(),
+    adaptedContent: v.string(),
+    adaptedTitle: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_article", ["articleId"])
+    .index("by_article_platform", ["articleId", "platform"]),
+
+  // Week 3: AI Visibility Tracking
+  trackedBrands: defineTable({
+    userId: v.string(),
+    brandName: v.string(),
+    website: v.string(),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  trackedKeywords: defineTable({
+    brandId: v.id("trackedBrands"),
+    keyword: v.string(),
+    category: v.string(),
+    isActive: v.boolean(),
+    createdAt: v.number(),
+  }).index("by_brand", ["brandId"]),
+
   competitorBrands: defineTable({
-    trackedBrandId: v.id('trackedBrands'),
-    userId: v.string(), // Denormalized
+    brandId: v.id("trackedBrands"),
     competitorName: v.string(),
     competitorWebsite: v.string(),
-    competitorVariations: v.optional(v.array(v.string())),
-    createdAt: v.number()
-  })
-    .index('by_tracked_brand', ['trackedBrandId'])
-    .index('by_user', ['userId']),
+    createdAt: v.number(),
+  }).index("by_brand", ["brandId"]),
 
-  /**
-   * Tracking Runs
-   * Execution of tracking jobs
-   */
   trackingRuns: defineTable({
-    brandId: v.id('trackedBrands'),
-    keywordId: v.id('trackedKeywords'),
-    userId: v.string(), // Denormalized
-    scheduledTime: v.number(),
-    startedAt: v.optional(v.number()),
-    completedAt: v.optional(v.number()),
+    brandId: v.id("trackedBrands"),
+    keywordId: v.id("trackedKeywords"),
+    platform: v.string(), // "chatgpt" | "claude" | "perplexity" | "gemini"
+    totalPrompts: v.number(),
+    completedPrompts: v.number(),
     status: v.union(
-      v.literal('scheduled'),
-      v.literal('running'),
-      v.literal('completed'),
-      v.literal('failed'),
-      v.literal('partial') // Some platforms succeeded, some failed
+      v.literal("running"),
+      v.literal("completed"),
+      v.literal("failed")
     ),
-    totalPrompts: v.number(),
-    totalPlatforms: v.number(), // 4 for full run (ChatGPT, Claude, Perplexity, Gemini)
-    completedPlatforms: v.number(),
-    totalCost: v.number(), // API cost in USD
-    errorMessage: v.optional(v.string()),
-    createdAt: v.number()
+    startedAt: v.number(),
+    completedAt: v.optional(v.number()),
   })
-    .index('by_brand', ['brandId'])
-    .index('by_keyword', ['keywordId'])
-    .index('by_user', ['userId'])
-    .index('by_status', ['status'])
-    .index('by_scheduled_time', ['scheduledTime']),
+    .index("by_brand", ["brandId"])
+    .index("by_keyword", ["keywordId"])
+    .index("by_status", ["status"]),
 
-  /**
-   * AI Responses
-   * Responses from AI platforms for each prompt
-   */
   aiResponses: defineTable({
-    trackingRunId: v.id('trackingRuns'),
-    brandId: v.id('trackedBrands'),
-    keywordId: v.id('trackedKeywords'),
-    promptText: v.string(),
-    promptCategory: v.string(), // question, comparison, use_case, etc.
-    platform: v.union(
-      v.literal('chatgpt'),
-      v.literal('claude'),
-      v.literal('perplexity'),
-      v.literal('gemini')
-    ),
-    responseText: v.string(),
-    responseTimestamp: v.number(),
-    apiCost: v.number(), // Cost for this single API call
-    tokenCount: v.optional(v.number()),
-    errorOccurred: v.boolean(),
-    errorMessage: v.optional(v.string())
-  })
-    .index('by_tracking_run', ['trackingRunId'])
-    .index('by_brand', ['brandId'])
-    .index('by_keyword', ['keywordId'])
-    .index('by_platform', ['platform'])
-    .index('by_error', ['errorOccurred']),
+    trackingRunId: v.id("trackingRuns"),
+    prompt: v.string(),
+    response: v.string(),
+    mentionedBrand: v.optional(v.boolean()),
+    mentionPosition: v.optional(v.number()),
+    createdAt: v.number(),
+  }).index("by_run", ["trackingRunId"]),
 
-  /**
-   * Citations
-   * Detected brand mentions in AI responses
-   */
-  citations: defineTable({
-    responseId: v.id('aiResponses'),
-    trackingRunId: v.id('trackingRuns'),
-    brandId: v.id('trackedBrands'),
-    mentionType: v.union(v.literal('direct'), v.literal('url'), v.literal('both')),
-    mentionedText: v.string(), // Exact text found (e.g., "ProjectHub" or URL)
-    position: v.number(), // 1st, 2nd, 3rd mention in response
-    quoteExcerpt: v.string(), // ±50 words around mention
-    fullContext: v.string(), // Full sentence/paragraph
-    mentionContext: v.union(
-      v.literal('recommendation'),
-      v.literal('comparison'),
-      v.literal('case_study'),
-      v.literal('data_source'),
-      v.literal('alternative'),
-      v.literal('unknown')
-    ),
-    possibleFalsePositive: v.boolean(),
-    characterOffset: v.number(),
-    createdAt: v.number()
-  })
-    .index('by_response', ['responseId'])
-    .index('by_tracking_run', ['trackingRunId'])
-    .index('by_brand', ['brandId'])
-    .index('by_mention_type', ['mentionType'])
-    .index('by_context', ['mentionContext'])
-    .index('by_false_positive', ['possibleFalsePositive']),
-
-  /**
-   * Visibility Scores
-   * Calculated visibility scores per platform per tracking run
-   */
   visibilityScores: defineTable({
-    trackingRunId: v.id('trackingRuns'),
-    brandId: v.id('trackedBrands'),
-    keywordId: v.id('trackedKeywords'),
-    platform: v.union(
-      v.literal('chatgpt'),
-      v.literal('claude'),
-      v.literal('perplexity'),
-      v.literal('gemini'),
-      v.literal('aggregate') // Overall score across platforms
-    ),
+    brandId: v.id("trackedBrands"),
+    keywordId: v.id("trackedKeywords"),
+    platform: v.string(),
     score: v.number(), // Percentage (0-100)
-    weightedScore: v.optional(v.number()), // Weighted by position & context
+    mentions: v.number(),
     totalPrompts: v.number(),
-    promptsWithMentions: v.number(),
-    totalMentions: v.number(),
-    averagePosition: v.number(),
-    changeFromPrevious: v.optional(v.number()), // +5.0, -12.5
-    changePercentage: v.optional(v.number()), // +50%, -25%
-    trend: v.optional(v.union(v.literal('up'), v.literal('down'), v.literal('stable'))),
-    contextBreakdown: v.object({
-      recommendation: v.number(),
-      comparison: v.number(),
-      case_study: v.number(),
-      data_source: v.number(),
-      alternative: v.number(),
-      unknown: v.number()
-    }),
-    calculatedAt: v.number(),
-    createdAt: v.number()
+    averagePosition: v.optional(v.number()),
+    createdAt: v.number(),
   })
-    .index('by_tracking_run', ['trackingRunId'])
-    .index('by_brand', ['brandId'])
-    .index('by_keyword', ['keywordId'])
-    .index('by_platform', ['platform'])
-    .index('by_brand_platform', ['brandId', 'platform'])
-    .index('by_calculated_at', ['calculatedAt']),
+    .index("by_brand", ["brandId"])
+    .index("by_keyword", ["keywordId"])
+    .index("by_platform", ["platform"])
+    .index("by_brand_keyword", ["brandId", "keywordId"]),
 
-  /**
-   * Historical Snapshots
-   * Aggregated historical data for trend analysis
-   */
-  historicalSnapshots: defineTable({
-    brandId: v.id('trackedBrands'),
-    keywordId: v.optional(v.id('trackedKeywords')), // Optional: null for brand-level
-    platform: v.optional(
-      v.union(
-        v.literal('chatgpt'),
-        v.literal('claude'),
-        v.literal('perplexity'),
-        v.literal('gemini'),
-        v.literal('aggregate')
-      )
+  // Week 5: Smart Optimization
+  opportunityScans: defineTable({
+    userId: v.string(),
+    status: v.union(
+      v.literal("running"),
+      v.literal("completed"),
+      v.literal("failed")
     ),
-    date: v.number(), // Start of day timestamp
-    aggregationType: v.union(v.literal('daily'), v.literal('weekly'), v.literal('monthly')),
-    averageScore: v.number(),
-    highestScore: v.number(),
-    lowestScore: v.number(),
-    totalMentions: v.number(),
-    totalPrompts: v.number(),
-    dataPointCount: v.number(), // Number of tracking runs aggregated
-    createdAt: v.number()
+    articlesScanned: v.number(),
+    opportunitiesFound: v.number(),
+    startedAt: v.number(),
+    completedAt: v.optional(v.number()),
+  }).index("by_user", ["userId"]),
+
+  opportunities: defineTable({
+    scanId: v.id("opportunityScans"),
+    articleId: v.id("articles"),
+    type: v.string(), // "keyword" | "faq" | "metadata" | "llmtxt" | "internal-link"
+    title: v.string(),
+    description: v.string(),
+    priority: v.union(
+      v.literal("quick-win"),
+      v.literal("moderate"),
+      v.literal("complex")
+    ),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("applied"),
+      v.literal("dismissed")
+    ),
+    stagedChanges: v.optional(v.string()), // JSON of proposed changes
+    createdAt: v.number(),
+    appliedAt: v.optional(v.number()),
   })
-    .index('by_brand', ['brandId'])
-    .index('by_brand_date', ['brandId', 'date'])
-    .index('by_date', ['date'])
-    .index('by_platform', ['platform'])
-    .index('by_aggregation_type', ['aggregationType'])
+    .index("by_scan", ["scanId"])
+    .index("by_article", ["articleId"])
+    .index("by_status", ["status"])
+    .index("by_priority", ["priority"]),
+
+  competitorSites: defineTable({
+    userId: v.string(),
+    domain: v.string(),
+    crawledAt: v.optional(v.number()),
+    pagesCrawled: v.number(),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  competitorPages: defineTable({
+    siteId: v.id("competitorSites"),
+    url: v.string(),
+    title: v.string(),
+    content: v.string(),
+    h1Tags: v.array(v.string()),
+    h2Tags: v.array(v.string()),
+    metaDescription: v.optional(v.string()),
+    crawledAt: v.number(),
+  }).index("by_site", ["siteId"]),
+
+  stagedChanges: defineTable({
+    opportunityId: v.id("opportunities"),
+    originalContent: v.string(),
+    modifiedContent: v.string(),
+    changeType: v.string(),
+    createdAt: v.number(),
+  }).index("by_opportunity", ["opportunityId"]),
+
+  // Users
+  users: defineTable({
+    clerkId: v.string(),
+    email: v.string(),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    plan: v.union(v.literal("free"), v.literal("pro"), v.literal("enterprise")),
+    stripeCustomerId: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_clerk_id", ["clerkId"])
+    .index("by_email", ["email"]),
 });
