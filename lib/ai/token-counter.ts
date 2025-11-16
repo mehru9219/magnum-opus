@@ -3,7 +3,7 @@
  * Estimate token counts for AI API usage
  */
 
-import type { AIModel, AIProvider } from "./types";
+import type { AIModel } from "./types";
 import { getModelConfig } from "./models";
 
 /**

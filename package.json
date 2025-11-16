@@ -1,0 +1,27 @@
+{
+  "name": "magnum-opus",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000m\u0000a\u0000g\u0000n\u0000u\u0000m\u0000-\u0000o\u0000p\u0000u\u0000s\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:49689/git/mehru9219/magnum-opus"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.9"
+  }
+}

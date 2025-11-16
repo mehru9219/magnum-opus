@@ -9,7 +9,6 @@ import {
   buildPrompt,
   selectBestModel,
   estimateArticleCost,
-  calculateCost,
   globalTokenTracker,
 } from "./index";
 import { getCachedAIResponse, cacheAIResponse } from "../cache/redis";

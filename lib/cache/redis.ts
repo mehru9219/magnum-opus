@@ -4,7 +4,7 @@
  */
 
 import type { CacheEntry } from "../ai/types";
-import crypto from "crypto";
+import * as crypto from "crypto";
 
 /**
  * Redis client singleton (placeholder - will use Upstash Redis in production)
