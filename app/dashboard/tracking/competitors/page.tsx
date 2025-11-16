@@ -31,7 +31,7 @@ export default function CompetitorsPage() {
         <CardHeader>
           <CardTitle>Visibility Comparison by Platform</CardTitle>
           <CardDescription>
-            Compare your brand's visibility score against competitors
+            Compare your brand&apos;s visibility score against competitors
           </CardDescription>
         </CardHeader>
         <CardContent>

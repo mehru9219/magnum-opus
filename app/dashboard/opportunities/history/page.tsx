@@ -25,7 +25,7 @@ export default function OpportunitiesHistoryPage() {
         <CardHeader>
           <CardTitle>Applied Optimizations</CardTitle>
           <CardDescription>
-            Track the optimizations you've implemented
+            Track the optimizations you&apos;ve implemented
           </CardDescription>
         </CardHeader>
         <CardContent>

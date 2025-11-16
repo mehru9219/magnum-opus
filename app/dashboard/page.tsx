@@ -7,7 +7,7 @@ export default function DashboardPage() {
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Welcome back!</h2>
         <p className="text-muted-foreground">
-          Here's what's happening with your content today.
+          Here&apos;s what&apos;s happening with your content today.
         </p>
       </div>
 

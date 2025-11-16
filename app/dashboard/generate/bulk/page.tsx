@@ -39,7 +39,7 @@ export default function BulkGeneratePage() {
           <p>• Use specific, detailed topics for better results</p>
           <p>• Target: 30 articles in under 30 minutes with GPT-4</p>
           <p>• Articles are queued and processed with automatic retries</p>
-          <p>• You'll receive an email when the batch completes</p>
+          <p>• You&apos;ll receive an email when the batch completes</p>
         </CardContent>
       </Card>
     </div>

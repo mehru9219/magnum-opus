@@ -88,8 +88,8 @@ export default function OpportunityPreviewPage({ params }: { params: { id: strin
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
-            Adding this keyword to your H2 heading will improve your content's relevance
-            for the tracked keyword "AI content generation".
+            Adding this keyword to your H2 heading will improve your content&apos;s relevance
+            for the tracked keyword &quot;AI content generation&quot;.
           </p>
           <p>
             This change was detected because the keyword appears in your tracking list
